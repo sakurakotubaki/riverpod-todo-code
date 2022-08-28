@@ -66,12 +66,97 @@ import 'package:todo_app/state/state.dart';
 //   }
 // }
 
+// class SignInPage extends StatefulHookConsumerWidget {
+//   @override
+//   SignInPageState createState() => SignInPageState();
+// }
+//
+// class SignInPageState extends ConsumerState<SignInPage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final email = ref.watch(emailProvider);
+//     final password = ref.watch(passwordProvider);
+//
+//     final emailController = useTextEditingController(text: email);
+//     final passwordController = useTextEditingController(text: password);
+//     final _formKey = GlobalKey<FormState>();
+//
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('ログイン'),
+//       ),
+//       body: SafeArea(
+//         child: Form(
+//           key: _formKey,
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               TextFormField(
+//                 autofocus: true,
+//                 validator: (value) {
+//                   if (value == null || value.isEmpty) {
+//                     return 'メールアドレスが入力されていません!';
+//                   }
+//                   return null;
+//                 },
+//                 decoration: const InputDecoration(
+//                   border: UnderlineInputBorder(),
+//                   labelText: 'メールアドレスを入力してください',
+//                 ),
+//                 controller: emailController,
+//                 onChanged: (value) {
+//                   ref.watch(emailProvider.notifier).state = value;
+//                 },
+//               ),
+//               TextFormField(
+//                 autofocus: true,
+//                 validator: (value) {
+//                   if (value == null || value.isEmpty) {
+//                     return 'パスワードが入力されていません!';
+//                   }
+//                   return null;
+//                 },
+//                 decoration: const InputDecoration(
+//                   border: UnderlineInputBorder(),
+//                   labelText: 'パスワードを入力してください',
+//                 ),
+//                 controller: passwordController,
+//                 onChanged: (value) {
+//                   ref.watch(passwordProvider.notifier).state = value;
+//                 },
+//               ),
+//               SizedBox(height: 20),
+//               ElevatedButton(
+//                   onPressed: () async {
+//                     if (_formKey.currentState!.validate()) {
+//                       ref
+//                           .read(todoStateProvider.notifier)
+//                           .signIn(email, password);
+//                       context.go('/select');
+//                     } else {
+//                       // フォームが有効でなければ、スナックバーを表示する。
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(content: Text('ユーザ情報の入力をお願いします!')),
+//                       );
+//                     }
+//                   },
+//                   child: Text('ログイン')),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class SignInPage extends StatefulHookConsumerWidget {
   @override
   SignInPageState createState() => SignInPageState();
 }
 
 class SignInPageState extends ConsumerState<SignInPage> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final email = ref.watch(emailProvider);
@@ -79,69 +164,74 @@ class SignInPageState extends ConsumerState<SignInPage> {
 
     final emailController = useTextEditingController(text: email);
     final passwordController = useTextEditingController(text: password);
-    final _formKey = GlobalKey<FormState>();
-
+    // 上記で作成した_formKeyを使ってFormウィジェットを作ります。
     return Scaffold(
       appBar: AppBar(
         title: const Text('ログイン'),
       ),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                autofocus: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'メールアドレスが入力されていません!';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'メールアドレスを入力してください',
-                ),
-                controller: emailController,
-                onChanged: (value) {
-                  ref.watch(emailProvider.notifier).state = value;
-                },
-              ),
-              TextFormField(
-                autofocus: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'パスワードが入力されていません!';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'パスワードを入力してください',
-                ),
-                controller: passwordController,
-                onChanged: (value) {
-                  ref.watch(passwordProvider.notifier).state = value;
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      ref
-                          .read(todoStateProvider.notifier)
-                          .signIn(email, password);
-                      context.go('/select');
-                    } else {
-                      // フォームが有効でなければ、スナックバーを表示する。
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('ユーザ情報の入力をお願いします!')),
-                      );
+      body: Container(
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                TextFormField(
+                  // validatorは、ユーザーが入力したテキストを受け取ります。
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'メールアドレスが入力されていません!';
                     }
+                    return null;
                   },
-                  child: Text('ログイン')),
-            ],
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    labelText: 'メールアドレスを入力してください',
+                  ),
+                  controller: emailController,
+                  onChanged: (value) {
+                    ref.watch(emailProvider.notifier).state = value;
+                  },
+                ),
+                TextFormField(
+                  // validatorは、ユーザーが入力したテキストを受け取ります。
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'パスワードが入力されていません!';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    labelText: 'パスワードを入力してください',
+                  ),
+                  controller: passwordController,
+                  onChanged: (value) {
+                    ref.watch(passwordProvider.notifier).state = value;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ref
+                            .read(todoStateProvider.notifier)
+                            .signIn(email, password);
+                        context.go('/select');
+                      } else {
+                        // フォームが有効でなければ、スナックバーを表示する。
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('ユーザ情報の入力をお願いします!')),
+                        );
+                      }
+                    },
+                    child: const Text('ログイン'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
